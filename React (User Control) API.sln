@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "React (User Control) API", "React (User Control) API.csproj", "{DE125522-CAE0-4733-93DB-8F0A8CA8F061}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DE125522-CAE0-4733-93DB-8F0A8CA8F061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE125522-CAE0-4733-93DB-8F0A8CA8F061}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE125522-CAE0-4733-93DB-8F0A8CA8F061}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE125522-CAE0-4733-93DB-8F0A8CA8F061}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AEA231DD-6C88-4335-9695-A3795EDF5419}
+	EndGlobalSection
+EndGlobal
