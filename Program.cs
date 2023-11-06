@@ -1,4 +1,12 @@
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using React__User_Control__API.Modells;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System.Net;
+
+
 
 internal class Program
 {
@@ -13,6 +21,19 @@ internal class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(
+                policy =>
+                {
+                    policy.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    
+        });
+
+        });
+            
 
         var app = builder.Build();
 
@@ -22,17 +43,20 @@ internal class Program
             app.UseSwaggerUI();
         }
 
+        app.UseCors();
+
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
 
         app.MapControllers();
 
-        // Setup
-        DB = new DBManager();
+          
+            DB = new DBManager();
 
-        app.Run();
+            app.Run();     
 
-        DB.Close();
+            DB.Close();
+        
     }
 }

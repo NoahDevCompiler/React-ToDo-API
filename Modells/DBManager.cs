@@ -25,27 +25,28 @@ namespace React__User_Control__API.Modells
             connection.Close();
         }
 
-        public void CreateUser(string username, string email, string password, int id) {
+        public ToDoResult CreateUser(string username, string email, string password, string saltbase64) {
             try {
-                string sqlQuery = "INSERT INTO Registration(ID, UserName, Password, Email) VALUES (@id, @username, @password, " +
-                    "@email) ";
+                string sqlQuery = "INSERT INTO register(UserName, Password, Email, saltBase64) VALUES (@username, @password, " +
+                    "@email, @saltbase64) ";
                 using (MySqlCommand command = new MySqlCommand(sqlQuery, connection)) {
-                    command.Parameters.AddWithValue("@id", id);
                     command.Parameters.AddWithValue("@username", username);
                     command.Parameters.AddWithValue("@password", password);
                     command.Parameters.AddWithValue("@email", email);
+                    command.Parameters.AddWithValue("@saltbase64", saltbase64);
+                    command.ExecuteNonQuery();
 
                 }
-
+                return new ToDoResult(true, "", "Konto erstellt");
             }
             catch (Exception ex) {
-
+                return new ToDoResult(false, ex.Message);
             }
 
         }
         public ToDoResult IsUserTaken(string username) {
 
-            string sqlQuery = "SELECT Count(*) FROM Registration WHERE UserName = @username";
+            string sqlQuery = "SELECT Count(*) FROM register WHERE UserName = @username";
             try {
                 using (MySqlCommand command = new MySqlCommand(sqlQuery, connection)) {
 
