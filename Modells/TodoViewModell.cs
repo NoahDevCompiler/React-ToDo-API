@@ -1,9 +1,7 @@
 ﻿using System;
 
-public class ToDo_Modell
+public class TodoViewModell
 {
-    public int Id { get; set; }
-
 
     public string Name { get; set; }
 
@@ -20,9 +18,9 @@ public class ToDo_Modell
     public DateTime Enddate { get; set; }
 
 
-    public ToDo_Modell(int id, string name, string description, string type, DateTime startdate, DateTime enddate)
+    public TodoViewModell( string name, string description, string type, DateTime startdate, DateTime enddate)
 	{
-        Id = id;
+        
 
         Name = name;
 

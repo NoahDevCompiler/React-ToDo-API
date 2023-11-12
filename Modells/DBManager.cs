@@ -73,5 +73,35 @@ namespace React__User_Control__API.Modells
             }
         }
 
+        //Table ToDo
+
+        public ToDoResult InsertToDO(string name, string description, string type, DateTime startdate, DateTime enddate) {
+
+            try {
+                string sqlquery = "INSERT INTO todos (name, description, type, startdate, enddate) VALUES(@name, @description, @type, @startdate, @enddate)";
+
+                using (MySqlCommand sqlcmd = new MySqlCommand(sqlquery, connection)) {
+                    sqlcmd.Parameters.AddWithValue("@name", name);
+                    sqlcmd.Parameters.AddWithValue("@description", description);                  
+                    sqlcmd.Parameters.AddWithValue("@type", type);
+                    sqlcmd.Parameters.AddWithValue("@startdate", startdate);
+                    sqlcmd.Parameters.AddWithValue("@enddate", enddate);
+
+                    sqlcmd.ExecuteNonQuery();
+                    return new ToDoResult(true, sqlquery);
+                }
+            }
+            catch {
+                return new ToDoResult(false, "konnte nicht gefetcht werden" );
+            }
+
+
+        
+
+            
+
+        }
+
+
     }
 }
