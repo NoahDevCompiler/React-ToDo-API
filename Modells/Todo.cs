@@ -1,8 +1,8 @@
 ﻿using System;
 
-public class TodoViewModell
+public class Todo
 {
-
+   
     public string Name { get; set; }
 
 
@@ -18,7 +18,7 @@ public class TodoViewModell
     public DateTime Enddate { get; set; }
 
 
-    public TodoViewModell( string name, string description, string type, DateTime startdate, DateTime enddate)
+    public Todo( string name, string description, string type, DateTime startdate, DateTime enddate)
 	{
         
 

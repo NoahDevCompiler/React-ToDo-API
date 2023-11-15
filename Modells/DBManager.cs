@@ -92,13 +92,40 @@ namespace React__User_Control__API.Modells
                 }
             }
             catch {
+
+
+
                 return new ToDoResult(false, "konnte nicht gefetcht werden" );
             }
-
-
-        
-
             
+
+        }
+        public ToDoResult GetToDos(int id) {
+            try {
+                string query = "SELECT Name, Description, Type, Startdate, Enddate FROM todos";
+
+
+                using(MySqlCommand sqlcmd = new MySqlCommand()) {
+
+                    List<Todo> todo = new List<Todo>();
+
+                    var reader = sqlcmd.ExecuteReader();
+                    
+                    while (reader.Read()) {
+                        todo.Add(new Todo(
+                                reader.GetString("Name"),
+                                reader.GetString("Description"),
+                                reader.GetString("Type"),
+                                reader.GetDateTime("Startdate"),
+                                reader.GetDateTime("Enddate")
+                            )) ;
+                    }
+                
+                }
+            }
+            catch {
+
+            }
 
         }
 
