@@ -11,7 +11,7 @@ namespace React__User_Control__API.Controllers
         
        
         [HttpPost("register")]     
-        public IActionResult Register([FromBody] RegisterViewModell model) {
+        public IActionResult Register([FromBody] User model) {
 
             UserHashed user = new UserHashed();
 

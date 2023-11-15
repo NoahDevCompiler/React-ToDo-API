@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq.Expressions;
 using System.Net.Mail;
+using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Newtonsoft.Json;
 
 namespace React__User_Control__API.Modells
 {
@@ -100,12 +103,12 @@ namespace React__User_Control__API.Modells
             
 
         }
-        public ToDoResult GetToDos(int id) {
+        public ToDoResult GetToDos() {
             try {
                 string query = "SELECT Name, Description, Type, Startdate, Enddate FROM todos";
 
 
-                using(MySqlCommand sqlcmd = new MySqlCommand()) {
+                using(MySqlCommand sqlcmd = new MySqlCommand(query, connection)) {
 
                     List<Todo> todo = new List<Todo>();
 
@@ -118,13 +121,16 @@ namespace React__User_Control__API.Modells
                                 reader.GetString("Type"),
                                 reader.GetDateTime("Startdate"),
                                 reader.GetDateTime("Enddate")
-                            )) ;
+                     )) ;
                     }
+                    reader.Close();
+                    var jsonresult = JsonConvert.SerializeObject(todo);
+                    return new ToDoResult(true, "", jsonresult);
                 
                 }
             }
             catch {
-
+                return new ToDoResult(false, "blödian");
             }
 
         }

@@ -20,13 +20,13 @@ public class Todo
 
     public Todo( string name, string description, string type, DateTime startdate, DateTime enddate)
 	{
-        
+
 
         Name = name;
 
         Description = description;
 
-        Type = type;
+        Type = type;    
 
         Startdate = startdate;
 

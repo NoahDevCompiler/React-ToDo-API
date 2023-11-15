@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Common;
 using React__User_Control__API.Modells;
 using System.Security.Cryptography;
+using Newtonsoft.Json.Serialization;
 
 
 [Route("api/[controller]")]
@@ -25,11 +26,11 @@ public class ToDoController : Controller
         
     }
 
-    [HttpGet("todos")]
-    public IActionResult GetToDos() {
+    [HttpGet("gettodos")]
+    public IActionResult GetToDo() {
+
+        ToDoResult res = Program.DB.GetToDos();
         
-        ToDoResult res = Program.DB.GetToDos()
-        
-        return Ok(todos);
+        return Ok(res.result);
     }
 }
