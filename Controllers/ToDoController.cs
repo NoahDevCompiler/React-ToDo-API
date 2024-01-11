@@ -27,10 +27,27 @@ public class ToDoController : Controller
     }
 
     [HttpGet("gettodos")]
-    public IActionResult GetToDo() {
-
-        ToDoResult res = Program.DB.GetToDos();
-        
+    public IActionResult GetToDo([FromQuery] bool completedOnly)
+    {
+        ToDoResult res = Program.DB.GetToDos(completedOnly);
         return Ok(res.result);
+    }
+
+    [HttpPut("updateStatus")]
+    public IActionResult UpdateToDoStatus(int id, [FromBody] int isfinished)
+    {
+        try
+        {
+            ToDoResult res = Program.DB.UpdateCompletion(id, isfinished);
+            if(res.success) {
+                return Ok("Aktualisiert");
+            }
+            else return BadRequest(res.error);
+            
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("Fehler beim aktualisieren des ToDo-Status: " + ex.Message);
+        }
     }
 }

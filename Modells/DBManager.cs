@@ -6,6 +6,7 @@ using System.Net.Mail;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Newtonsoft.Json;
+using System.Data.SqlTypes;
 
 namespace React__User_Control__API.Modells
 {
@@ -30,6 +31,7 @@ namespace React__User_Control__API.Modells
 
         public ToDoResult CreateUser(string username, string email, string password, string saltbase64) {
             try {
+
                 string sqlQuery = "INSERT INTO register(UserName, Password, Email, saltBase64) VALUES (@username, @password, " +
                     "@email, @saltbase64) ";
                 using (MySqlCommand command = new MySqlCommand(sqlQuery, connection)) {
@@ -78,7 +80,9 @@ namespace React__User_Control__API.Modells
 
         //Table ToDo
 
-        public ToDoResult InsertToDO(string name, string description, string type, DateTime startdate, DateTime enddate) {
+        public ToDoResult InsertToDO(string name, string description, string type, DateTime startdate, DateTime enddate, int? isfinished = null) {
+
+            isfinished ??= 0;
 
             try {
                 string sqlquery = "INSERT INTO todos (name, description, type, startdate, enddate) VALUES(@name, @description, @type, @startdate, @enddate)";
@@ -89,6 +93,7 @@ namespace React__User_Control__API.Modells
                     sqlcmd.Parameters.AddWithValue("@type", type);
                     sqlcmd.Parameters.AddWithValue("@startdate", startdate);
                     sqlcmd.Parameters.AddWithValue("@enddate", enddate);
+                    sqlcmd.Parameters.AddWithValue("@isFinished", isfinished);
 
                     sqlcmd.ExecuteNonQuery();
                     return new ToDoResult(true, sqlquery);
@@ -103,10 +108,12 @@ namespace React__User_Control__API.Modells
             
 
         }
-        public ToDoResult GetToDos() {
+        public ToDoResult GetToDos(bool completedOnly = default) {
             try {
                 string query = "SELECT Name, Description, Type, Startdate, Enddate FROM todos";
 
+                if (completedOnly == true) query += " WHERE isfinished = 1";
+                else if (completedOnly == false) query += " WHERE isfinished = 0";
 
                 using(MySqlCommand sqlcmd = new MySqlCommand(query, connection)) {
 
@@ -133,6 +140,23 @@ namespace React__User_Control__API.Modells
                 return new ToDoResult(false, "blödian");
             }
 
+        }
+        public ToDoResult UpdateCompletion(int id, int isfinished) {
+            try {
+                string query = $"UPDATE todos SET isfinished = @isfinished WHERE ID = @ID;";
+
+                using (MySqlCommand cmd = new MySqlCommand( query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@isfinished", isfinished);
+                    cmd.Parameters.AddWithValue("@ID", id);
+
+                    cmd.ExecuteNonQuery();
+                    return new ToDoResult(true, query);
+                }
+            }
+            catch {
+                return new ToDoResult(false, "could not update to database");
+            }
         }
 
 
