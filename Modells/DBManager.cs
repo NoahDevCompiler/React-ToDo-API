@@ -110,7 +110,7 @@ namespace React__User_Control__API.Modells
         }
         public ToDoResult GetToDos(bool completedOnly = default) {
             try {
-                string query = "SELECT Name, Description, Type, Startdate, Enddate FROM todos";
+                string query = "SELECT Name, Description, Type, Startdate, Enddate, ID FROM todos";
 
                 if (completedOnly == true) query += " WHERE isfinished = 1";
                 else if (completedOnly == false) query += " WHERE isfinished = 0";
@@ -127,7 +127,8 @@ namespace React__User_Control__API.Modells
                                 reader.GetString("Description"),
                                 reader.GetString("Type"),
                                 reader.GetDateTime("Startdate"),
-                                reader.GetDateTime("Enddate")
+                                reader.GetDateTime("Enddate"),
+                                reader.GetInt32("ID")
                      )) ;
                     }
                     reader.Close();
@@ -156,6 +157,22 @@ namespace React__User_Control__API.Modells
             }
             catch {
                 return new ToDoResult(false, "could not update to database");
+            }
+        }
+        public ToDoResult DeleteToDo(int id) { 
+            try {
+                string query = "DELETE FROM todos WHERE ID = @ID";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@ID", id);
+                    
+                    cmd.ExecuteNonQuery();
+                    return new ToDoResult(true, query);
+                }
+            }
+            catch {
+                return new ToDoResult(false, "could not Delete ToDo"); 
             }
         }
 

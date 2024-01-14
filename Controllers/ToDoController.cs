@@ -40,14 +40,32 @@ public class ToDoController : Controller
         {
             ToDoResult res = Program.DB.UpdateCompletion(id, isfinished);
             if(res.success) {
-                return Ok("Aktualisiert");
+                return Json("Aktualisiert");
             }
             else return BadRequest(res.error);
             
         }
         catch (Exception ex)
         {
-            return BadRequest("Fehler beim aktualisieren des ToDo-Status: " + ex.Message);
+            return BadRequest("Fehler beim aufrufen der Methode " + ex.Message);
         }
+    }
+
+    [HttpDelete("deleteTodo")]
+
+    public IActionResult DeleteToDo(int id)
+    {
+        try
+        {
+            ToDoResult res = Program.DB.DeleteToDo(id);
+            if(res.success) {
+                return Json("ToDo von Datenbank gelöscht");
+            }
+            else return BadRequest(res.error);
+        }
+        catch (Exception ex) { 
+            return BadRequest( "Fehler beim aufrufen der Methode" + ex.Message); 
+        }
+
     }
 }

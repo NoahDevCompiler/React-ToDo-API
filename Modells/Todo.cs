@@ -17,8 +17,10 @@ public class Todo
 
     public DateTime Enddate { get; set; }
 
+    public int ID { get; set; } 
 
-    public Todo( string name, string description, string type, DateTime startdate, DateTime enddate)
+
+    public Todo( string name, string description, string type, DateTime startdate, DateTime enddate, int id)
 	{
 
 
@@ -31,6 +33,10 @@ public class Todo
         Startdate = startdate;
 
         Enddate = enddate;
+
+        ID = id;    
+
+
 		
 	}
 }
