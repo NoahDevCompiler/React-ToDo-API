@@ -17,7 +17,7 @@ namespace React__User_Control__API.Controllers
 
             if (!ModelState.IsValid) return BadRequest("Invalid Data");
 
-            ToDoResult _res = Program.DB.IsUserTaken(model.UserName);
+            ToDoResult _res = Program.DB.IsUserTaken(model.UserName, model.Email);
             if (!_res.success) return BadRequest("DB Failed");
             if ((bool)_res.result == true) return BadRequest("Benutzer Bereits vergeben");
             else
@@ -28,11 +28,6 @@ namespace React__User_Control__API.Controllers
                 user.PasswordHashed = PasswordHashed;
                 user.UserName = model.UserName;
                 user.PasswordSalt = PasswordSalt;
-                
-                
-                
-
-                
 
                 string hashedPasswordBase64 = Convert.ToBase64String(user.PasswordHashed);
                 string saltBase64 = Convert.ToBase64String(user.PasswordSalt);
@@ -43,5 +38,24 @@ namespace React__User_Control__API.Controllers
             }
  
         }
+
+        [HttpPost("login")]
+        public IActionResult CheckLogin([FromBody] string email, [FromBody] string password) {
+
+            ToDoResult result = Program.DB.CheckEmail(email);
+            ToDoResult result1 = Program.DB.CheckLogin(password, email);
+
+            if (!result.success) {
+              return BadRequest("Email wird nicht verwendet");
+            }
+            if (!result1.success) {
+                return BadRequest("Falsche eingaben für Login");
+            } else {
+                return Ok("Korrekte Login eingaben");
+            }   
+            
+        }
     }
+
+
 }

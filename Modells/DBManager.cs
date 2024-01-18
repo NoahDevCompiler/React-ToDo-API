@@ -32,7 +32,7 @@ namespace React__User_Control__API.Modells
         public ToDoResult CreateUser(string username, string email, string password, string saltbase64) {
             try {
 
-                string sqlQuery = "INSERT INTO register(UserName, Password, Email, saltBase64) VALUES (@username, @password, " +
+                string sqlQuery = "INSERT INTO user_acc(UserName, Password, Email, saltBase64) VALUES (@username, @password, " +
                     "@email, @saltbase64) ";
                 using (MySqlCommand command = new MySqlCommand(sqlQuery, connection)) {
                     command.Parameters.AddWithValue("@username", username);
@@ -49,13 +49,14 @@ namespace React__User_Control__API.Modells
             }
 
         }
-        public ToDoResult IsUserTaken(string username) {
+        public ToDoResult IsUserTaken(string username, string email) {
 
-            string sqlQuery = "SELECT Count(*) FROM register WHERE UserName = @username";
+            string sqlQuery = "SELECT Count(*) as ExistingUser FROM user_acc WHERE UserName = @Username OR  Email = @Email;";
             try {
                 using (MySqlCommand command = new MySqlCommand(sqlQuery, connection)) {
 
-                    command.Parameters.AddWithValue("@username", username);
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@Email", email);
                     int count = Convert.ToInt32(command.ExecuteScalar());
                     return new ToDoResult(true, "", count > 0);
                 }
@@ -175,7 +176,56 @@ namespace React__User_Control__API.Modells
                 return new ToDoResult(false, "could not Delete ToDo"); 
             }
         }
+        public ToDoResult CheckEmail(string email) {
+            try {
+                string query = "SELECT * FROM user_acc WHERE Email = @Email";
 
+                using(MySqlCommand cmd = new MySqlCommand(query, connection)) {
+
+                    cmd.Parameters.AddWithValue("@Email", email);
+
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    if (count == 0) {
+                        return new ToDoResult(false, "User nicht gefunden");
+                    }
+                    else {
+                        return new ToDoResult(true, "", count > 0);
+                    }
+                    
+                   
+
+                }
+            }
+            catch {
+                return new ToDoResult(false, "User nicht gefunden");
+            }
+
+        }
+        public ToDoResult CheckLogin(string email, string password) {
+            try {
+                string query = "SELECT ID FROM user_acc WHERE Password = @Password AND Email = @Email ";
+
+                Auth.PasswordHash.CreatePassword(password, out byte[] PasswordHashed, out byte[] PasswordSalt);
+
+                string hashedPasswordBase64 = Convert.ToBase64String(PasswordHashed);
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection)) {
+
+                    cmd.Parameters.AddWithValue("@Password", hashedPasswordBase64);
+                    cmd.Parameters.AddWithValue("@Email", email);
+
+                    cmd.ExecuteNonQuery();
+                    return new ToDoResult(true, "Korrekte User eingaben");
+                }
+                
+
+
+            }
+            catch {
+                return new ToDoResult(false, "");
+            }
+        }
 
     }
 }

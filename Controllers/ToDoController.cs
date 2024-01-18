@@ -52,7 +52,6 @@ public class ToDoController : Controller
     }
 
     [HttpDelete("deleteTodo")]
-
     public IActionResult DeleteToDo(int id)
     {
         try
