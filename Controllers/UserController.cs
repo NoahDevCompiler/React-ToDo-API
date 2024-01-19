@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using React__User_Control__API.Modells;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 
 namespace React__User_Control__API.Controllers
 {
     [Route("api/[controller]")]
-    public class UserController : Controller
+    public class UserController : ControllerBase
     {
-        
-       
-        [HttpPost("register")]     
+
+
+        [HttpPost("register")]
         public IActionResult Register([FromBody] User model) {
 
             UserHashed user = new UserHashed();
@@ -20,11 +21,10 @@ namespace React__User_Control__API.Controllers
             ToDoResult _res = Program.DB.IsUserTaken(model.UserName, model.Email);
             if (!_res.success) return BadRequest("DB Failed");
             if ((bool)_res.result == true) return BadRequest("Benutzer Bereits vergeben");
-            else
-            {
+            else {
                 Auth.PasswordHash.CreatePassword(model.Password, out byte[] PasswordHashed, out byte[] PasswordSalt);
 
-                
+
                 user.PasswordHashed = PasswordHashed;
                 user.UserName = model.UserName;
                 user.PasswordSalt = PasswordSalt;
@@ -36,26 +36,8 @@ namespace React__User_Control__API.Controllers
 
                 return Ok("Konto Erstellt");
             }
- 
-        }
 
-        [HttpPost("login")]
-        public IActionResult CheckLogin([FromBody] string email, [FromBody] string password) {
-
-            ToDoResult result = Program.DB.CheckEmail(email);
-            ToDoResult result1 = Program.DB.CheckLogin(password, email);
-
-            if (!result.success) {
-              return BadRequest("Email wird nicht verwendet");
-            }
-            if (!result1.success) {
-                return BadRequest("Falsche eingaben für Login");
-            } else {
-                return Ok("Korrekte Login eingaben");
-            }   
-            
         }
     }
-
-
 }
+
