@@ -209,14 +209,21 @@ namespace React__User_Control__API.Modells
                 Auth.PasswordHash.CreatePassword(password, out byte[] PasswordHashed, out byte[] PasswordSalt);
 
                 string hashedPasswordBase64 = Convert.ToBase64String(PasswordHashed);
-
+                Console.WriteLine(hashedPasswordBase64);
                 using (MySqlCommand cmd = new MySqlCommand(query, connection)) {
 
                     cmd.Parameters.AddWithValue("@Password", hashedPasswordBase64);
                     cmd.Parameters.AddWithValue("@Email", email);
 
-                    cmd.ExecuteNonQuery();
-                    return new ToDoResult(true, "Korrekte User eingaben");
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    if (count == 0) {
+                        return new ToDoResult(false, "Falsches Passwort");
+                    } else {
+                        return new ToDoResult(true, "User gefunden");
+                    }
+
+                    
                 }
                 
 
