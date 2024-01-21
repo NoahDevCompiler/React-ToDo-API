@@ -7,6 +7,7 @@ using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Newtonsoft.Json;
 using System.Data.SqlTypes;
+using System.Security.Cryptography.X509Certificates;
 
 namespace React__User_Control__API.Modells
 {
@@ -58,7 +59,12 @@ namespace React__User_Control__API.Modells
                     command.Parameters.AddWithValue("@Username", username);
                     command.Parameters.AddWithValue("@Email", email);
                     int count = Convert.ToInt32(command.ExecuteScalar());
-                    return new ToDoResult(true, "", count > 0);
+
+                    if(count == 0) {
+                        return new ToDoResult(true, "", count > 0);
+                    }
+                    else return new ToDoResult(false, "UserName oder Email bereits vergeben");
+  
                 }
             }
             catch (Exception ex) {
@@ -192,8 +198,7 @@ namespace React__User_Control__API.Modells
                     else {
                         return new ToDoResult(true, "", count > 0);
                     }
-                    
-                   
+ 
 
                 }
             }
@@ -203,27 +208,58 @@ namespace React__User_Control__API.Modells
 
         }
         public ToDoResult CheckLogin(string email, string password) {
+
+            byte[] storedPassword = null;
+            byte[] storedSalt = null; 
+            
             try {
-                string query = "SELECT ID FROM user_acc WHERE Password = @Password AND Email = @Email ";
 
-                Auth.PasswordHash.CreatePassword(password, out byte[] PasswordHashed, out byte[] PasswordSalt);
+                //Passwort überprüfung
+                string getstored = "SELECT saltBase64, Password From user_acc Where Email = @Email";
 
-                string hashedPasswordBase64 = Convert.ToBase64String(PasswordHashed);
+                using (MySqlCommand command = new MySqlCommand(getstored, connection)) {
 
-                using (MySqlCommand cmd = new MySqlCommand(query, connection)) {
+                    command.Parameters.AddWithValue("@Email", email);
 
-                    cmd.Parameters.AddWithValue("@Password", hashedPasswordBase64);
-                    cmd.Parameters.AddWithValue("@Email", email);
+                    using(MySqlDataReader reader = command.ExecuteReader()) {
 
-                    cmd.ExecuteNonQuery();
-                    return new ToDoResult(true, "Korrekte User eingaben");
+                        if (reader.Read()) {
+                            string PasswordHash = reader.GetString("Password");
+                            string SaltHash = reader.GetString("saltBase64");
+
+                            storedPassword = Convert.FromBase64String(PasswordHash);
+                            storedSalt = Convert.FromBase64String(SaltHash);
+
+                            if (Auth.PasswordHash.VerifyPassword(password, storedPassword, storedSalt)) {
+
+                                return new ToDoResult(true, "Passwort übereinstimmung");
+
+                            } else return new ToDoResult(false, "Falsches Passwort");
+
+                        } else return new ToDoResult(false, "");
+
+                                          
+                    }
                 }
-                
 
+                
+                //string query = "SELECT ID FROM user_acc WHERE Password = @Password AND Email = @Email ";
+
+                //using (MySqlCommand cmd = new MySqlCommand(query, connection)) {
+
+                //    cmd.Parameters.AddWithValue("@Password", password);
+                //    cmd.Parameters.AddWithValue("@Email", email);
+
+                //    int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                //    if (count == 1) {
+                //        return new ToDoResult(true, "User Authentifiziert", count > 0);
+                //    } else return new ToDoResult(false, "Falsches Login");
+                //}
 
             }
             catch {
-                return new ToDoResult(false, "");
+                return new ToDoResult(false, "couldnt fetch Data");
             }
         }
 
