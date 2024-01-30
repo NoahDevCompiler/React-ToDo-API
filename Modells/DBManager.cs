@@ -234,12 +234,15 @@ namespace React__User_Control__API.Modells
 
                                 return new ToDoResult(true, "Passwort übereinstimmung");
 
-                            } else return new ToDoResult(false, "Falsches Passwort");
+                string hashedPasswordBase64 = Convert.ToBase64String(PasswordHashed);
 
-                        } else return new ToDoResult(false, "");
+                using (MySqlCommand cmd = new MySqlCommand(query, connection)) {
 
-                                          
-                    }
+                    cmd.Parameters.AddWithValue("@Password", hashedPasswordBase64);
+                    cmd.Parameters.AddWithValue("@Email", email);
+
+                    cmd.ExecuteNonQuery();
+                    return new ToDoResult(true, "Korrekte User eingaben");
                 }
 
                 
