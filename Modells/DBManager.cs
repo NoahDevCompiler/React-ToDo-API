@@ -221,7 +221,7 @@ namespace React__User_Control__API.Modells
 
                     command.Parameters.AddWithValue("@Email", email);
 
-                    using(MySqlDataReader reader = command.ExecuteReader()) {
+                    using (MySqlDataReader reader = command.ExecuteReader()) {
 
                         if (reader.Read()) {
                             string PasswordHash = reader.GetString("Password");
@@ -234,31 +234,11 @@ namespace React__User_Control__API.Modells
 
                                 return new ToDoResult(true, "Passwort übereinstimmung");
 
-                string hashedPasswordBase64 = Convert.ToBase64String(PasswordHashed);
+                            } else return new ToDoResult(false, "Falsches Passwort");
 
-                using (MySqlCommand cmd = new MySqlCommand(query, connection)) {
-
-                    cmd.Parameters.AddWithValue("@Password", hashedPasswordBase64);
-                    cmd.Parameters.AddWithValue("@Email", email);
-
-                    cmd.ExecuteNonQuery();
-                    return new ToDoResult(true, "Korrekte User eingaben");
+                        } else return new ToDoResult(false, "Database error");
+                    }
                 }
-
-                
-                //string query = "SELECT ID FROM user_acc WHERE Password = @Password AND Email = @Email ";
-
-                //using (MySqlCommand cmd = new MySqlCommand(query, connection)) {
-
-                //    cmd.Parameters.AddWithValue("@Password", password);
-                //    cmd.Parameters.AddWithValue("@Email", email);
-
-                //    int count = Convert.ToInt32(cmd.ExecuteScalar());
-
-                //    if (count == 1) {
-                //        return new ToDoResult(true, "User Authentifiziert", count > 0);
-                //    } else return new ToDoResult(false, "Falsches Login");
-                //}
 
             }
             catch {
