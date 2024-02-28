@@ -6,24 +6,22 @@ using System.Security.Cryptography;
 namespace React__User_Control__API.Controllers
 {
     [Route("api/[controller]")]
-    public class UserLoginController : ControllerBase {
+    public class UserLoginController : Controller {
         [HttpPost("login")]
-        public IActionResult CheckLogin(NetUserLogin value) {
+        public IActionResult CheckLogin([FromBody]NetUserLogin value) {
 
             ToDoResult result = Program.DB.CheckEmail(value.Email);
+
+            if (!result.success) return BadRequest("Email wird nicht verwendet");
+
+
+            ToDoResult result1 = Program.DB.CheckLogin(value.Email, value.Password);
+
+            if (!result1.success)  return BadRequest("Falsche eingaben für Login");
+
+            ToDoResult getid = Program.DB.GetID(value.Email);
+            return Ok(getid.result);
             
-
-            if (result.success){
-                ToDoResult result1 = Program.DB.CheckLogin(value.Email, value.Password);
-
-                if (!result1.success) {
-                    return BadRequest("Falsche eingaben für Login");
-                } else {
-                    return Ok("Korrekte Login eingaben");
-                }
-            }
-
-            else return BadRequest("Email wird nicht verwendet");
         }
         public class NetUserLogin {
             [Required] public string Email { get; set; }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Newtonsoft.Json;
 using System.Data.SqlTypes;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Mvc;
 
 namespace React__User_Control__API.Modells
 {
@@ -114,6 +115,31 @@ namespace React__User_Control__API.Modells
             }
             
 
+        }
+        public ToDoResult GetID(string email) {
+            try {
+                string query = "SELECT ID From user_acc Where email = @email";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection)) {
+
+                    cmd.Parameters.AddWithValue("@email", email);
+                    var reader = cmd.ExecuteReader();                  
+                    string id = "";
+                    if (reader.Read()) { 
+                        id = reader.GetString("ID");
+                    }
+                    reader.Close();
+                    if (id == "") {
+                        return new ToDoResult(false, "Database failed");
+                    }
+                    return new ToDoResult(true, "", id);
+                }
+            }
+            catch {
+
+            }
+
+            return new ToDoResult(false, "");
         }
         public ToDoResult GetToDos(bool completedOnly = default) {
             try {
