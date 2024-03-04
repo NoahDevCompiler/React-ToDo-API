@@ -86,7 +86,6 @@ namespace React__User_Control__API.Modells
             }
         }
 
-        //Table ToDo
 
         public ToDoResult InsertToDO(string name, string description, string type, DateTime startdate, DateTime enddate, int? isfinished = null) {
 
@@ -139,6 +138,31 @@ namespace React__User_Control__API.Modells
 
             }
 
+            return new ToDoResult(false, "");
+        }
+        
+        public ToDoResult GetUsername(int id) {
+            try {
+                string query = "SELECT UserName From user_acc Where ID = @id";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection)) {
+
+                    cmd.Parameters.AddWithValue("@id", id);
+                    var reader = cmd.ExecuteReader();
+                    string username = "";
+                    if (reader.Read()) {
+                        username = reader.GetString("UserName");
+                    }
+                    reader.Close();
+                    if (username == "") {
+                        return new ToDoResult(false, "Database failed");
+                    }
+                    return new ToDoResult(true, "", username);
+                }
+            }
+            catch {
+
+            }
             return new ToDoResult(false, "");
         }
         public ToDoResult GetToDos(bool completedOnly = default) {
@@ -240,7 +264,7 @@ namespace React__User_Control__API.Modells
             
             try {
 
-                //Passwort überprüfung
+              
                 string getstored = "SELECT saltBase64, Password From user_acc Where Email = @Email";
 
                 using (MySqlCommand command = new MySqlCommand(getstored, connection)) {

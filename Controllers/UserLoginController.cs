@@ -23,6 +23,7 @@ namespace React__User_Control__API.Controllers
             return Ok(getid.result);
             
         }
+
         public class NetUserLogin {
             [Required] public string Email { get; set; }
             [Required] public string Password { get; set; }
