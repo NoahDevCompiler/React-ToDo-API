@@ -47,7 +47,7 @@ namespace React__User_Control__API.Modells
                 return new ToDoResult(true, "", "Konto erstellt");
             }
             catch (Exception ex) {
-                return new ToDoResult(false, ex.Message);
+                return new ToDoResult(false, "Database failed: " + ex.Message);
             }
 
         }
@@ -69,7 +69,7 @@ namespace React__User_Control__API.Modells
                 }
             }
             catch (Exception ex) {
-                return new ToDoResult(false, "Could not fetch UserName from Table"); 
+                return new ToDoResult(false, "Database failed"); 
             }
         }
            
@@ -82,7 +82,7 @@ namespace React__User_Control__API.Modells
                 } else return new ToDoResult(false, "Email must be 'bene-edu.ch'");
             }
             catch (Exception ex) {
-                return new ToDoResult(false, "Could not Check Email");
+                return new ToDoResult(false, "Database failed");
             }
         }
 
@@ -106,11 +106,8 @@ namespace React__User_Control__API.Modells
                     return new ToDoResult(true, sqlquery);
                 }
             }
-            catch {
-
-
-
-                return new ToDoResult(false, "konnte nicht gefetcht werden" );
+            catch { 
+                return new ToDoResult(false, "Database failed");
             }
             
 
@@ -161,7 +158,7 @@ namespace React__User_Control__API.Modells
                 }
             }
             catch {
-
+                
             }
             return new ToDoResult(false, "");
         }
@@ -195,7 +192,7 @@ namespace React__User_Control__API.Modells
                 }
             }
             catch {
-                return new ToDoResult(false, "blödian");
+                return new ToDoResult(false, "Database failed");
             }
 
         }
@@ -229,7 +226,7 @@ namespace React__User_Control__API.Modells
                 }
             }
             catch {
-                return new ToDoResult(false, "could not Delete ToDo"); 
+                return new ToDoResult(false, "Database failed"); 
             }
         }
         public ToDoResult CheckEmail(string email) {
@@ -253,7 +250,7 @@ namespace React__User_Control__API.Modells
                 }
             }
             catch {
-                return new ToDoResult(false, "User nicht gefunden");
+                return new ToDoResult(false, "Database failed");
             }
 
         }
@@ -292,7 +289,7 @@ namespace React__User_Control__API.Modells
 
             }
             catch {
-                return new ToDoResult(false, "couldnt fetch Data");
+                return new ToDoResult(false, "Database failed");
             }
         }
 
